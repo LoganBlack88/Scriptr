@@ -7,27 +7,10 @@
 
 var Scriptr = (function(){
 
-    var _args;
-    var _version = "0.1.0";
 
-
-    Scriptr = function(args) {
-
-        _args = args;
-    };
-
-
-    Scriptr.prototype.getArgs = function() {
-
-        return _args;
-    };
-
-
-    Scriptr.prototype.getVersion = function() {
-
-        return _version;
-    };
-
+    /*
+    *  Helper Functions
+    */
 
     var isArray = function(arg){
 
@@ -38,7 +21,6 @@ var Scriptr = (function(){
 
         return (arg instanceof Object);
     };
-
 
     var forEach = function(array, fn) {
 
@@ -56,9 +38,7 @@ var Scriptr = (function(){
         }
     };
 
-
     var applyDefaults = function(obj1, obj2) {
-
         var keys = Object.keys(obj2);
         forEach(keys, function(key) {
             if (!obj1.hasOwnProperty(key)){
@@ -70,6 +50,11 @@ var Scriptr = (function(){
     };
 
 
+
+    /*
+    * Objects / Constructors
+    */
+
     function Field(opts) {
         var _field = Scriptr.prototype.fields[opts.type];
 
@@ -79,12 +64,21 @@ var Scriptr = (function(){
     };
 
 
-    var modelResolve = Model.prototype.resolve = function(){
+    function Model(opts) {
+        var model = this;
+        this.name = opts.name;
+        this.fields = {};
+
+        forEach(opts.fields, function(field) {
+            model.fields[field.name] = getVariable(field);
+        });
+    };
+
+    Model.prototype.resolve = function(){
         var $model = this;
         var result = {};
 
         forEach($model.fields, function($field){
-
             result[$field.name] = $field.resolve($field, $model);
         });
 
@@ -92,30 +86,16 @@ var Scriptr = (function(){
     };
 
 
-    function Model(opts) {
-        var model = this;
-        this.name = opts.name;
-        this.fields = {};
-        this.resolve = modelResolve;
-
-        //build out fields
-        forEach(opts.fields, function(field) {
-            //model.fields[field.name] = new Field(field);
-            model.fields[field.name] = new Variable(field);
-        });
-    };
-
-
     function Loop(opts) {
         this.$model = new Model(opts.model);
-
         var _loop = Scriptr.prototype.loops[opts.type];
+
+        this.name = opts.name;
         this.options = applyDefaults(opts.options, _loop.defaults);
         this.resolve = _loop.resolve;
     };
 
-
-    function Variable(args){
+    var getVariable = function(args){
         var _variable;
 
         //LOOP
@@ -139,51 +119,38 @@ var Scriptr = (function(){
             _variable = new Field(args);
         }
 
-        this.inherit(_variable);
-    };
-
-    Variable.prototype.inherit = function(obj){
-        var that = this;
-        var keys = Object.keys(obj);
-        forEach(keys, function(key) {
-            that[key] = obj[key];
-        });
+        return _variable;
     };
 
 
+    var _args;
+    var _version = "0.1.0";
+
+    Scriptr = function(args) {
+
+        _args = args;
+    };
+
+
+    Scriptr.prototype.getArgs = function() {
+
+        return _args;
+    };
+
+
+    Scriptr.prototype.getVersion = function() {
+
+        return _version;
+    };
 
     Scriptr.prototype.generate = function(args) {
         args = args || _args;
 
-        var variable = new Variable(args);
+        var variable = getVariable(args);
         var result = variable.resolve();
 
         return result;
     };
-/*
-    function runModel(args){
-        $model = new Model(args.model);
-        return $model.resolve();
-    };
-
-    function runLoop(args) {
-        $loop = new Loop(args.loop);
-        $model = new Model(args.loop.model);
-        return $loop.resolve($loop, $model);
-    } ;
-
-    function run(args) {
-
-        if (args.loop) {
-
-            return runLoop(args);
-        }
-        else if (args.model) {
-
-            return runModel(args);
-        }
-    };
-*/
 
     return Scriptr;
 

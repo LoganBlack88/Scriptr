@@ -15,10 +15,6 @@ var Scriptr = (function(Scriptr) {
             resolve: function ($field, $model, $loop) {
                 $field = $field || this;
 
-                console.log('increment resolve');
-                console.log($field);
-
-
                 if (!$field.options.currentSeed) {
                     $field.options.currentSeed = $field.options.seed;
                 } else {

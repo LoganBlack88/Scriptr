@@ -148,7 +148,7 @@
     console.log('-------------------------------------------');
     console.log('');
 
-    var childrenScriptr = new Scriptr({
+    var wifeScriptr = new Scriptr({
         model: {
             name: 'myModel',
             fields: [{
@@ -176,9 +176,128 @@
             }, {
                 name: 'wife',
                 type: 'model',
-                options : {}
+                options : {
+                    name : 'wife',
+                    fields: [{
+                        name: 'id',
+                        type: Scriptr.fieldTypes.INCREMENT,
+                        options: {
+                            seed: 1,
+                            interval: 1
+                        }
+                    }, {
+                        name: 'name',
+                        type: Scriptr.fieldTypes.STRING,
+                        options: {
+                            value: 'Jane Doe'
+                        }
+                    }, {
+                        name: 'age',
+                        type: Scriptr.fieldTypes.RANDOM,
+                        options: {
+                            min: 18,
+                            max: 35,
+                            floor: true,
+                            ceil: false
+                        }
+                    }]
+                }
             }]
         }
     });
 
+
+    console.log('calling wifeScriptr.generate() :');
+    var result3 = wifeScriptr.generate();
+
+    console.log('');
+    console.log('RESULT:');
+    console.log(result3);
+    console.log('');
+    console.log('');
+    console.log('');
+
+
+
+    console.log('-------------------------------------------');
+    console.log(' PHASE 5 : Generation childrenScriptr');
+    console.log('-------------------------------------------');
+    console.log('');
+
+    var childrenScriptr = new Scriptr({
+        model: {
+            name: 'myModel',
+            fields: [{
+                name: 'id',
+                type: Scriptr.fieldTypes.INCREMENT,
+                options: {
+                    seed: 1,
+                    interval: 1
+                }
+            }, {
+                name: 'name',
+                type: Scriptr.fieldTypes.STRING,
+                options: {
+                    value: 'John Doe'
+                }
+            }, {
+                name: 'age',
+                type: Scriptr.fieldTypes.RANDOM,
+                options: {
+                    min: 18,
+                    max: 35,
+                    floor: true,
+                    ceil: false
+                }
+            }, {
+                name: 'children',
+                type: 'loop',
+                options : {
+                    name : 'children',
+                    type: Scriptr.loopTypes.ITERATOR,
+                    options : {
+                        count : 3,
+                        iteration : 1
+                    },
+                    model: {
+                        name: 'myModel',
+                        fields: [{
+                            name: 'id',
+                            type: Scriptr.fieldTypes.INCREMENT,
+                            options: {
+                                seed: 1,
+                                interval: 1
+                            }
+                        }, {
+                            name: 'name',
+                            type: Scriptr.fieldTypes.STRING,
+                            options: {
+                                value: 'John Doe'
+                            }
+                        }, {
+                            name: 'age',
+                            type: Scriptr.fieldTypes.RANDOM,
+                            options: {
+                                min: 18,
+                                max: 35,
+                                floor: true,
+                                ceil: false
+                            }
+                        }]
+                    }
+                }
+            }]
+        }
+    });
+
+
+    console.log('calling childrenScriptr.generate() :');
+    var result4 = childrenScriptr.generate();
+
+    console.log('');
+    console.log('RESULT:');
+    console.log(result4);
+    console.log('');
+    console.log('');
+    console.log('');
 //});
