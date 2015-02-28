@@ -12,8 +12,24 @@ var Scriptr = (function(Scriptr) {
     var _fields = {
 
         increment : {
+            /**
             resolve: function ($field, $model, $loop) {
                 $field = $field || this;
+
+                if (!$field.options.currentSeed) {
+                    $field.options.currentSeed = $field.options.seed;
+                } else {
+                    $field.options.currentSeed += $field.options.interval;
+                }
+                return $field.options.currentSeed;
+            },
+            */
+            resolve: function ($context) {
+                var $field = this;  //TODO: get rid of "$field"
+
+                console.log('Field (increment) resolve()');
+                console.log($context);
+                console.log($field);
 
                 if (!$field.options.currentSeed) {
                     $field.options.currentSeed = $field.options.seed;
@@ -30,7 +46,7 @@ var Scriptr = (function(Scriptr) {
 
 
         integer : {
-            resolve : function($field, $model, $loop) {
+            resolve : function($context) {
 
                 return this.options.value;
             },
@@ -41,7 +57,7 @@ var Scriptr = (function(Scriptr) {
 
 
         random : {
-            resolve : function($field, $model, $loop) {
+            resolve : function($context) {
                 var min = this.options.min,
                     max = this.options.max,
                     result = Math.random() * (max - min) + min;
@@ -61,7 +77,7 @@ var Scriptr = (function(Scriptr) {
         },
 
         string : {
-            resolve : function($field, $model, $loop) {
+            resolve : function($context) {
 
                 return this.options.value;
             },

@@ -10,8 +10,8 @@ var Scriptr = (function(Scriptr) {
 
         iterator : {
 
-            resolve : function($loop, $model){
-                $loop = $loop || this;
+            resolve : function($context){
+                $loop = this;
                 $model = this.$model;
 
                 var results = [];

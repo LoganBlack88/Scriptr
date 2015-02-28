@@ -11,7 +11,7 @@
     console.log('-------------------------------------------');
     console.log('');
 
-    var myScriptr = new Scriptr();
+    var myScriptr = new Scriptr({ model: { name : "myModel", fields: [] }});
 
     console.log('this is the Scriptr global object: ');
     console.log(Scriptr);
