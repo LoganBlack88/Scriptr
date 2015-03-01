@@ -5,38 +5,17 @@
 
 var Scriptr = (function(Scriptr) {
 
-    console.log('scriptr.fieldTypes immediate function');
-    console.log(Scriptr);
-
-
     var _fields = {
 
         increment : {
-            /**
-            resolve: function ($field, $model, $loop) {
-                $field = $field || this;
 
-                if (!$field.options.currentSeed) {
-                    $field.options.currentSeed = $field.options.seed;
-                } else {
-                    $field.options.currentSeed += $field.options.interval;
-                }
-                return $field.options.currentSeed;
-            },
-            */
             resolve: function ($context) {
-                var $field = this;  //TODO: get rid of "$field"
-
-                console.log('Field (increment) resolve()');
-                console.log($context);
-                console.log($field);
-
-                if (!$field.options.currentSeed) {
-                    $field.options.currentSeed = $field.options.seed;
+                if (!this.options.currentSeed) {
+                    this.options.currentSeed = this.options.seed;
                 } else {
-                    $field.options.currentSeed += $field.options.interval;
+                    this.options.currentSeed += this.options.interval;
                 }
-                return $field.options.currentSeed;
+                return this.options.currentSeed;
             },
             defaults : {
                 seed : 0,

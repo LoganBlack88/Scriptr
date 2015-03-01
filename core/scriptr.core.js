@@ -77,10 +77,9 @@ var Scriptr = (function(){
         this.$context = clone($context);
         this.$context.$field = this;
 
-        //this.resolve = _field.resolve;
         var field = this;
         this.resolve = function() {
-            field.value = _field.resolve.call(field, $context); //TODO: Use 'apply' to call with scope of "this".
+            field.value = _field.resolve.call(field, $context);
             return field.value;
         };
     };
@@ -89,7 +88,7 @@ var Scriptr = (function(){
     function Model(opts, $context) {
 
         this.name = opts.name;
-        this.options = opts;    //TODO: Perhaps make use of ApplyDefaults?? (Only if Model has a "type".)
+        this.options = opts;
         this.fields = {};
         this.value = {};
 
@@ -101,33 +100,20 @@ var Scriptr = (function(){
             model.fields[field.name] = getVariable(field, model.$context);
         });
 
-        this.resolve = function(){
+        this.resolve = function() {
+            model.value = {};   //clear former values.
             forEach(model.fields, function(field){
-                //model.value[field.name] = field.resolve(field, model, model.$context.$loop);    //TODO: Perhaps Field.context will take care of this??
                 model.value[field.name] = field.resolve();
             });
-            return model.value;
+            return clone(model.value);  //clone to break reference
         };
     };
 
-    /**
-    Model.prototype.resolve = function($context){
-        var $model = this;
-        var result = {};
-
-        forEach($model.fields, function($field){
-            result[$field.name] = $field.resolve($field, $model);
-        });
-
-        return result;
-    };
-    */
 
     function Loop(opts, $context) {
         var _loop = Scriptr.prototype.loops[opts.type];
 
-        //TODO: Allow fields &/or loops. Change to $variable and use factory, perhaps?
-        this.$model = new Model(opts.model, $context);
+        this.$variable = getVariable(opts, $context); //new Model(opts.model, $context);
 
         this.name = opts.name;
         this.options = applyDefaults(opts.options, _loop.defaults);
@@ -150,32 +136,29 @@ var Scriptr = (function(){
         //LOOP
         if (args.loop) {
             _variable = new Loop(args.loop, $context);
-           //$context.$loop = _variable;
         }
         else if (args.type === Scriptr.fieldTypes.LOOP) {
             _variable = new Loop(args.options, $context);
-            //$context.$loop = _variable;
         }
 
         // MODEL
         else if (args.model){
             _variable = new Model(args.model, $context);
-            //$context.$model = _variable;
         }
         else if (args.type === Scriptr.fieldTypes.MODEL) {
             _variable = new Model(args.options, $context);
-            //$context.$model = _variable;
         }
 
         //TODO: Test for Fields better. Don't just leave it as a default case.
         //FIELD
         else {
             _variable = new Field(args, $context);
-            //$context.$field = _variable;
         }
 
         return _variable;
     };
+
+
 
 
     var _args;
@@ -203,7 +186,6 @@ var Scriptr = (function(){
 
         var $context = {};
         var generator = getVariable(args, $context);
-        //console.log(generator);
 
         var result = generator.resolve();
 

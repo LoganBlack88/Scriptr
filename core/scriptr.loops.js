@@ -11,13 +11,12 @@ var Scriptr = (function(Scriptr) {
         iterator : {
 
             resolve : function($context){
-                $loop = this;
-                $model = this.$model;
+                $variable = this.$variable;
 
                 var results = [];
-                for (var i = $loop.options.iteration; i <= $loop.options.count; i++) {
-                    $loop.options.iteration = i;
-                    results.push($model.resolve());
+                for (var i = this.options.iteration; i <= this.options.count; i++) {
+                    this.options.iteration = i;
+                    results.push($variable.resolve());
                 }
                 return results;
             },
@@ -27,7 +26,6 @@ var Scriptr = (function(Scriptr) {
                 iteration : 0
             }
         }
-
     };
 
     Scriptr.prototype.loops = _loops;
