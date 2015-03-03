@@ -6,6 +6,7 @@
     //document.addEventListener("DOMContentLoaded", function(event) {
 
 
+
     console.log('-------------------------------------------');
     console.log(' PHASE 1 : Inspection');
     console.log('-------------------------------------------');
@@ -46,6 +47,7 @@
     console.log('');
     console.log('');
     console.log('');
+
 
     console.log('-------------------------------------------');
     console.log(' PHASE 2 : Generation personScriptr');
@@ -89,7 +91,6 @@
     console.log('');
     console.log('');
     console.log('');
-
 
 
     console.log('-------------------------------------------');
@@ -300,4 +301,34 @@
     console.log('');
     console.log('');
     console.log('');
+
+
+
+
+    console.log('-------------------------------------------');
+    console.log(' PHASE 6 : Generation fieldScriptr');
+    console.log('-------------------------------------------');
+    console.log('');
+
+
+    var fieldScriptr = new Scriptr({
+        field : {
+            name: 'random',
+            type: Scriptr.fieldTypes.RANDOM,
+            options: {
+                min: 1,
+                max: 10,
+                floor: true,
+                ceil: false
+            }
+        }
+    });
+
+    console.log('calling fieldscriptr.generate()');
+    var result6 = fieldScriptr.generate();
+
+    console.log('');
+    console.log('RESULT:');
+    console.log(result6);
+
 //});

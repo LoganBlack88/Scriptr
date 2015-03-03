@@ -49,6 +49,7 @@ var Scriptr = (function(){
         return obj1;
     };
 
+    //TODO: Make a deep copy.
     /* Shallow Copy */
     var clone = function(obj) {
 
@@ -62,13 +63,108 @@ var Scriptr = (function(){
     };
 
 
+    /*
+    * Fields
+    */
+
+    var _fields = {
+
+        increment : {
+
+            resolve: function ($context) {
+                if (!this.options.currentSeed) {
+                    this.options.currentSeed = this.options.seed;
+                } else {
+                    this.options.currentSeed += this.options.interval;
+                }
+                return this.options.currentSeed;
+            },
+            defaults : {
+                seed : 0,
+                interval : 1
+            }
+        },
+
+
+        integer : {
+            resolve : function($context) {
+
+                return this.options.value;
+            },
+            defaults : {
+                value : null
+            }
+        },
+
+
+        random : {
+            resolve : function($context) {
+                var min = this.options.min,
+                    max = this.options.max,
+                    result = Math.random() * (max - min) + min;
+
+                if (this.options.ceil) { return Math.ceil(result); }
+                if (this.options.floor) { return Math.floor(result); }
+                if (this.options.toFixed) { return result.toFixed(toFixed); }
+                return result;
+            },
+            defaults : {
+                min : 0,
+                max : 100,
+                ceil : false,
+                floor : true,
+                toFixed : null
+            }
+        },
+
+        string : {
+            resolve : function($context) {
+
+                return this.options.value;
+            },
+            defaults : {
+                value : null
+            }
+        }
+
+    };
+
+
+    /*
+    * Loops
+    */
+
+    var _loops = {
+
+        iterator : {
+
+            resolve : function($context){
+                $variable = this.$variable;
+
+                var results = [];
+                for (var i = this.options.iteration; i <= this.options.count; i++) {
+                    this.options.iteration = i;
+                    results.push($variable.resolve());
+                }
+                return results;
+            },
+
+            defaults : {
+                count : 0,
+                iteration : 0
+            }
+        }
+    };
+
+
 
     /*
     * Objects / Constructors
     */
 
     function Field(opts, $context) {
-        var _field = Scriptr.prototype.fields[opts.type];
+        var _field = _fields[opts.type];
+        //TODO: Validate _field
 
         this.name = opts.name;
         this.options = applyDefaults(opts.options, _field.defaults);
@@ -111,13 +207,13 @@ var Scriptr = (function(){
 
 
     function Loop(opts, $context) {
-        var _loop = Scriptr.prototype.loops[opts.type];
-
-        this.$variable = getVariable(opts, $context); //new Model(opts.model, $context);
+        var _loop = _loops[opts.type];
+        //TODO: Validate _loop.
 
         this.name = opts.name;
         this.options = applyDefaults(opts.options, _loop.defaults);
         this.value = [];
+        this.$variable = getVariable(opts, $context);
 
         this.$context = clone($context);
         this.$context.$loop = this;
@@ -149,11 +245,16 @@ var Scriptr = (function(){
             _variable = new Model(args.options, $context);
         }
 
-        //TODO: Test for Fields better. Don't just leave it as a default case.
         //FIELD
+        else if (args.field) {
+            _variable = new Field(args.field, $context);
+        }
+        //TODO: Write a more meaningful test. Look for 'args.type' in list of field types.
         else {
             _variable = new Field(args, $context);
         }
+
+        //TODO: Write a base case. Throw an exception or something, if variable cannot be resolved. Include variable name for identification?
 
         return _variable;
     };
@@ -169,7 +270,7 @@ var Scriptr = (function(){
         _args = args;
     };
 
-
+    //TODO: Consider giving this a better name. Data Model?
     Scriptr.prototype.getArgs = function() {
 
         return _args;
@@ -190,6 +291,34 @@ var Scriptr = (function(){
         var result = generator.resolve();
 
         return result;
+    };
+
+
+
+    //TODO: Make this dynamic - possibly at instantiation (so that fields can be added to the Scriptr global.)
+    Scriptr.prototype.fieldTypes = Scriptr.fieldTypes = {
+
+        MODEL : 'model',
+        LOOP : 'loop',
+
+        INCREMENT : 'increment',
+
+        INTEGER : 'integer',
+
+        RANDOM : 'random',
+
+        STRING : 'string'
+
+    };
+
+    //TODO: Make this dynamic - possibly at instantiation (so that new loops can be added to the Scriptr global.)
+    Scriptr.prototype.loopTypes = Scriptr.loopTypes = {
+
+        ITERATOR : 'iterator',
+
+        DOWHILE : 'doWhile',
+
+        CUSTOM : 'custom'
     };
 
     return Scriptr;
