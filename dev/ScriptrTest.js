@@ -6,7 +6,29 @@
     //document.addEventListener("DOMContentLoaded", function(event) {
 
 
+    /** Done with??
+var incrementScriptr = new Scriptr({
+    loop : {
+        type: Scriptr.loopTypes.ITERATOR,
+        options: { count: 3, iteration: 1 },
+        field: {
+            type: 'increment',
+            options : { increment : 5 }
+        }
+    }
+});
+var result = incrementScriptr.generate();
+console.log(result);
+    */
 
+        console.log(Scriptr.prototype);
+
+    var testingScriptr = new Scriptr();
+    console.log(testingScriptr);
+    console.log(testingScriptr.__testing__);
+
+
+    /*
     console.log('-------------------------------------------');
     console.log(' PHASE 1 : Inspection');
     console.log('-------------------------------------------');
@@ -17,6 +39,12 @@
     console.log('this is the Scriptr global object: ');
     console.log(Scriptr);
     console.log('');
+
+    console.log('this is the global Scriptr.addFields: ');
+    console.log(Scriptr.addField);
+    console.log('');
+
+
 
     console.log('this is myScriptr: ');
     console.log(myScriptr);
@@ -62,7 +90,7 @@
                 type: Scriptr.fieldTypes.INCREMENT,
                 options: {
                     seed: 1,
-                    interval: 1
+                    increment: 1
                 }
             }, {
                 name : 'name',
@@ -112,7 +140,7 @@
                     type: Scriptr.fieldTypes.INCREMENT,
                     options: {
                         seed: 1,
-                        interval: 1
+                        increment: 1
                     }
                 }, {
                     name: 'name',
@@ -157,7 +185,7 @@
                 type: Scriptr.fieldTypes.INCREMENT,
                 options: {
                     seed: 1,
-                    interval: 1
+                    increment: 1
                 }
             }, {
                 name: 'name',
@@ -184,7 +212,7 @@
                         type: Scriptr.fieldTypes.INCREMENT,
                         options: {
                             seed: 1,
-                            interval: 1
+                            increment: 1
                         }
                     }, {
                         name: 'name',
@@ -233,7 +261,7 @@
                 type: Scriptr.fieldTypes.INCREMENT,
                 options: {
                     seed: 1,
-                    interval: 1
+                    increment: 1
                 }
             }, {
                 name: 'name',
@@ -267,7 +295,7 @@
                             type: Scriptr.fieldTypes.INCREMENT,
                             options: {
                                 seed: 1,
-                                interval: 1
+                                increment: 1
                             }
                         }, {
                             name: 'name',
@@ -332,3 +360,6 @@
     console.log(result6);
 
 //});
+
+
+        */

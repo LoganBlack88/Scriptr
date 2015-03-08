@@ -1,13 +1,24 @@
 describe("The Scriptr global object", function(){
 
-    it("is defined globally", function(){
+    it("is defined globally.", function(){
 
         expect(Scriptr).toBeDefined();
     });
 
-    //TODO: Write tests to inspect global object properties.
 
-    it("instantiates without constructor arguments", function(){
+    it("has an addFields method.", function(){
+
+        expect(Scriptr.addFields).toBeDefined();
+    });
+
+
+    it("has an addLoops method.", function(){
+
+        expect(Scriptr.addLoops).toBeDefined();
+    });
+
+
+    it("instantiates without constructor arguments.", function(){
 
         var testScriptr;
         var testFn = function() {
@@ -18,7 +29,8 @@ describe("The Scriptr global object", function(){
         expect(testScriptr).toBeDefined();
     });
 
-    it("instantiates with constructor arguements", function(){
+
+    it("instantiates with constructor arguments.", function(){
 
         var testScriptr;
         var testFn = function() {
@@ -30,7 +42,7 @@ describe("The Scriptr global object", function(){
                         type: Scriptr.fieldTypes.INCREMENT,
                         options: {
                             seed: 1,
-                            interval: 1
+                            increment: 1
                         }
                     }]
                 }
@@ -40,8 +52,6 @@ describe("The Scriptr global object", function(){
         expect(testFn).not.toThrow();
         expect (testScriptr).toBeDefined();
     });
-
-
 
 
 });

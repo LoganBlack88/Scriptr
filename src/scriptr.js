@@ -11,6 +11,16 @@ var Scriptr = (function(){
     /*
     * Helper Functions
     */
+    /**
+     * TODO: Organize helpers into a pseudo underscore.
+     *      If underscore is found in the global scope, use it.
+     *      If not, create your own _ with a sampling of underscore's methods.
+     *      Also, add any other helpful methods (such as clone) to the _ namespace.
+     *      Note, if underscore is added AFTER Scriptr, this could cause problems...
+     *      ...Maybe recheck for _ at instantiation, and re-add non-underscore helpers.
+     */
+
+
 
     var isArray = function(arg){
 
@@ -72,21 +82,21 @@ var Scriptr = (function(){
         increment : {
 
             resolve: function ($context) {
-                if (!this.options.currentSeed) {
+                if (this.options.currentSeed === undefined) {
                     this.options.currentSeed = this.options.seed;
                 } else {
-                    this.options.currentSeed += this.options.interval;
+                    this.options.currentSeed += this.options.increment;
                 }
                 return this.options.currentSeed;
             },
             defaults : {
                 seed : 0,
-                interval : 1
+                increment : 1
             }
         },
 
 
-        integer : {
+        number : {
             resolve : function($context) {
 
                 return this.options.value;
@@ -167,7 +177,7 @@ var Scriptr = (function(){
         //TODO: Validate _field
 
         this.name = opts.name;
-        this.options = applyDefaults(opts.options, _field.defaults);
+        this.options = applyDefaults(opts.options || {}, _field.defaults);
         this.value = null;
 
         this.$context = clone($context);
@@ -226,6 +236,7 @@ var Scriptr = (function(){
 
     };
 
+
     var getVariable = function(args, $context){
         var _variable;
 
@@ -261,14 +272,33 @@ var Scriptr = (function(){
 
 
 
-
     var _args;
     var _version = "0.1.0";
+
 
     Scriptr = function(args) {
 
         _args = args;
     };
+
+    /**
+    *
+    * @param opts { name, resolve, defaults }
+    *          or { fieldOne : { resolve, defaults }, fieldTwo : { resolve, defaults } }
+    *          or [{ name, resolve, defaults }, { name, resolve, defaults }]
+    */
+    //TODO: Implement addFields.
+    Scriptr.addFields = function(opts){
+        console.log('addField');
+        console.log(opts);
+    };
+
+    //TODO: Implement addLoops.
+    Scriptr.addLoops = function(opts){
+        console.log('addField');
+        console.log(opts);
+    };
+
 
     //TODO: Consider giving this a better name. Data Model?
     Scriptr.prototype.getArgs = function() {
@@ -285,9 +315,7 @@ var Scriptr = (function(){
     Scriptr.prototype.generate = function(args) {
         args = args || _args;
 
-        var $context = {};
-        var generator = getVariable(args, $context);
-
+        var generator = getVariable(args, {});
         var result = generator.resolve();
 
         return result;
@@ -303,7 +331,7 @@ var Scriptr = (function(){
 
         INCREMENT : 'increment',
 
-        INTEGER : 'integer',
+        NUMBER : 'number',
 
         RANDOM : 'random',
 
@@ -320,6 +348,20 @@ var Scriptr = (function(){
 
         CUSTOM : 'custom'
     };
+
+    //BEGIN: Development only
+    //TODO: Remove at 'deploy'. grunt-strip-code?
+    //  http://philipwalton.com/articles/how-to-unit-test-private-functions-in-javascript/
+
+    Scriptr.prototype.__testing__ = {
+        _fields : _fields,
+        _loops : _loops
+    };
+
+    //END: Development only
+
+
+
 
     return Scriptr;
 
