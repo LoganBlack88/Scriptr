@@ -12,9 +12,9 @@ describe("The Scriptr field", function(){
             expect(Scriptr.prototype.__testing__._fields.increment).toBeDefined();
         });
 
-        it("has a default seed of 0.", function(){
+        it("has a default seed of 1.", function(){
 
-            expect(Scriptr.prototype.__testing__._fields.increment.defaults.seed).toEqual(0);
+            expect(Scriptr.prototype.__testing__._fields.increment.defaults.seed).toEqual(1);
         });
 
         it("has a default increment of 1.", function(){
@@ -22,27 +22,27 @@ describe("The Scriptr field", function(){
             expect(Scriptr.prototype.__testing__._fields.increment.defaults.increment).toEqual(1);
         });
 
-        it("counts up from 0, when generated with default options.", function(){
+        it("counts up from 1, when generated with default options.", function(){
             var incrementScriptr = new Scriptr({
                 loop : {
-                    type: Scriptr.loopTypes.ITERATOR,
+                    type: Scriptr.loops.ITERATOR,
                     options: { count: 5, iteration: 1 },
                     field: { type: 'increment' }
                 }
             });
             var result = incrementScriptr.generate();
 
-            expect(result[0]).toEqual(0);
-            expect(result[1]).toEqual(1);
-            expect(result[2]).toEqual(2);
-            expect(result[3]).toEqual(3);
-            expect(result[4]).toEqual(4);
+            expect(result[0]).toEqual(1);
+            expect(result[1]).toEqual(2);
+            expect(result[2]).toEqual(3);
+            expect(result[3]).toEqual(4);
+            expect(result[4]).toEqual(5);
         });
 
         it("accepts alternate seed options.", function(){
             var incrementScriptr = new Scriptr({
                 loop : {
-                    type: Scriptr.loopTypes.ITERATOR,
+                    type: Scriptr.loops.ITERATOR,
                     options: { count: 3, iteration: 1 },
                     field: {
                         type: 'increment',
@@ -60,7 +60,7 @@ describe("The Scriptr field", function(){
         it("accepts alternate increment options.", function(){
             var incrementScriptr = new Scriptr({
                 loop : {
-                    type: Scriptr.loopTypes.ITERATOR,
+                    type: Scriptr.loops.ITERATOR,
                     options: { count: 3, iteration: 1 },
                     field: {
                         type: 'increment',
@@ -70,15 +70,15 @@ describe("The Scriptr field", function(){
             });
             var result = incrementScriptr.generate();
 
-            expect(result[0]).toEqual(0);
-            expect(result[1]).toEqual(5);
-            expect(result[2]).toEqual(10);
+            expect(result[0]).toEqual(1);
+            expect(result[1]).toEqual(6);
+            expect(result[2]).toEqual(11);
         });
 
         it("accepts alternate seed AND increment options.", function(){
             var incrementScriptr = new Scriptr({
                 loop : {
-                    type: Scriptr.loopTypes.ITERATOR,
+                    type: Scriptr.loops.ITERATOR,
                     options: { count: 3, iteration: 1 },
                     field: {
                         type: 'increment',

@@ -90,7 +90,7 @@ var Scriptr = (function(){
                 return this.options.currentSeed;
             },
             defaults : {
-                seed : 0,
+                seed : 1,
                 increment : 1
             }
         },
@@ -163,6 +163,14 @@ var Scriptr = (function(){
                 count : 0,
                 iteration : 0
             }
+        },
+
+        doWhile : {
+            //TODO: Implement 'doWhile' loop.
+        },
+
+        custom : {
+            //TODO: Implement 'custom' loop.
         }
     };
 
@@ -244,7 +252,7 @@ var Scriptr = (function(){
         if (args.loop) {
             _variable = new Loop(args.loop, $context);
         }
-        else if (args.type === Scriptr.fieldTypes.LOOP) {
+        else if (args.type === Scriptr.fields.LOOP) {
             _variable = new Loop(args.options, $context);
         }
 
@@ -252,7 +260,7 @@ var Scriptr = (function(){
         else if (args.model){
             _variable = new Model(args.model, $context);
         }
-        else if (args.type === Scriptr.fieldTypes.MODEL) {
+        else if (args.type === Scriptr.fields.MODEL) {
             _variable = new Model(args.options, $context);
         }
 
@@ -271,14 +279,32 @@ var Scriptr = (function(){
     };
 
 
+    /**
+     * Create the Scriptr object.
+     */
 
-    var _args;
-    var _version = "0.1.0";
+    var _dataModel;
+
+    var getDataModel = function(){
+
+        return _dataModel;
+    };
+
+    var generate = function(args) {
+        args = args || _dataModel;
+
+        var generator = getVariable(args, {});
+        var result = generator.resolve();
+
+        return result;
+    };
 
 
     Scriptr = function(args) {
 
-        _args = args;
+        _dataModel = args;
+        this.getDataModel = getDataModel;
+        this.generate = generate;
     };
 
     /**
@@ -288,45 +314,23 @@ var Scriptr = (function(){
     *          or [{ name, resolve, defaults }, { name, resolve, defaults }]
     */
     //TODO: Implement addFields.
-    Scriptr.addFields = function(opts){
+    Scriptr.prototype.addFields = Scriptr.addFields = function(opts){
         console.log('addField');
         console.log(opts);
     };
 
     //TODO: Implement addLoops.
-    Scriptr.addLoops = function(opts){
+    Scriptr.prototype.addLoops = Scriptr.addLoops = function(opts){
         console.log('addField');
         console.log(opts);
     };
 
 
-    //TODO: Consider giving this a better name. Data Model?
-    Scriptr.prototype.getArgs = function() {
-
-        return _args;
-    };
-
-
-    Scriptr.prototype.getVersion = function() {
-
-        return _version;
-    };
-
-    Scriptr.prototype.generate = function(args) {
-        args = args || _args;
-
-        var generator = getVariable(args, {});
-        var result = generator.resolve();
-
-        return result;
-    };
-
-
-
     //TODO: Make this dynamic - possibly at instantiation (so that fields can be added to the Scriptr global.)
-    Scriptr.prototype.fieldTypes = Scriptr.fieldTypes = {
+    Scriptr.prototype.fields = Scriptr.fields = {
 
         MODEL : 'model',
+
         LOOP : 'loop',
 
         INCREMENT : 'increment',
@@ -340,7 +344,7 @@ var Scriptr = (function(){
     };
 
     //TODO: Make this dynamic - possibly at instantiation (so that new loops can be added to the Scriptr global.)
-    Scriptr.prototype.loopTypes = Scriptr.loopTypes = {
+    Scriptr.prototype.loops = Scriptr.loops = {
 
         ITERATOR : 'iterator',
 
@@ -349,9 +353,11 @@ var Scriptr = (function(){
         CUSTOM : 'custom'
     };
 
+
+
     //BEGIN: Development only
-    //TODO: Remove at 'deploy'. grunt-strip-code?
-    //  http://philipwalton.com/articles/how-to-unit-test-private-functions-in-javascript/
+        //TODO: Remove at 'deploy'. grunt-strip-code?
+        //  http://philipwalton.com/articles/how-to-unit-test-private-functions-in-javascript/
 
     Scriptr.prototype.__testing__ = {
         _fields : _fields,

@@ -9,7 +9,7 @@
     /** Done with??
 var incrementScriptr = new Scriptr({
     loop : {
-        type: Scriptr.loopTypes.ITERATOR,
+        type: Scriptr.loops.ITERATOR,
         options: { count: 3, iteration: 1 },
         field: {
             type: 'increment',
@@ -21,11 +21,41 @@ var result = incrementScriptr.generate();
 console.log(result);
     */
 
-        console.log(Scriptr.prototype);
+    console.log('Scriptr:');
+    console.log(Scriptr);
+console.log('');
+
+    console.log('Scriptr.prototype:');
+    console.log(Scriptr.prototype);
+console.log('');
 
     var testingScriptr = new Scriptr();
+    console.log('testingScriptr:')
     console.log(testingScriptr);
+console.log('');
+
+    console.log('testingScriptr.__testing__');
     console.log(testingScriptr.__testing__);
+console.log('');
+
+
+
+var testScriptr = new Scriptr({
+    name : 'id',
+    type : 'increment',
+    options : { seed : 0, increment : 3 }
+});
+
+console.log(testScriptr);
+console.log(testScriptr.getDataModel());
+
+console.log(typeof Scriptr);
+
+console.log(Scriptr.prototype === Scriptr);
+
+
+
+
 
 
     /*
@@ -58,20 +88,20 @@ console.log(result);
     console.log(myScriptr.getVersion());
     console.log('');
 
-    console.log('this is Scriptr.fieldTypes :');
-    console.log(Scriptr.fieldTypes);
+    console.log('this is Scriptr.fields :');
+    console.log(Scriptr.fields);
     console.log('');
 
-    console.log('this is myScriptr.fieldTypes :');
-    console.log(myScriptr.fieldTypes);
+    console.log('this is myScriptr.fields :');
+    console.log(myScriptr.fields);
     console.log('');
 
-    console.log('this is Scriptr.loopTypes :');
-    console.log(Scriptr.loopTypes);
+    console.log('this is Scriptr.loops :');
+    console.log(Scriptr.loops);
     console.log('');
 
-    console.log('this is myScriptr.loopTypes :');
-    console.log(myScriptr.loopTypes);
+    console.log('this is myScriptr.loops :');
+    console.log(myScriptr.loops);
     console.log('');
     console.log('');
     console.log('');
@@ -87,20 +117,20 @@ console.log(result);
             name: 'myModel',
             fields: [{
                 name: 'id',
-                type: Scriptr.fieldTypes.INCREMENT,
+                type: Scriptr.fields.INCREMENT,
                 options: {
                     seed: 1,
                     increment: 1
                 }
             }, {
                 name : 'name',
-                type : Scriptr.fieldTypes.STRING,
+                type : Scriptr.fields.STRING,
                 options: {
                     value : 'John Doe'
                 }
             }, {
                 name : 'age',
-                type : Scriptr.fieldTypes.RANDOM,
+                type : Scriptr.fields.RANDOM,
                 options : {
                     min : 18,
                     max : 35,
@@ -128,7 +158,7 @@ console.log(result);
 
     var peopleScriptr = new Scriptr({
         loop : {
-            type: Scriptr.loopTypes.ITERATOR,
+            type: Scriptr.loops.ITERATOR,
             options : {
                 count : 5,
                 iteration : 1
@@ -137,20 +167,20 @@ console.log(result);
                 name: 'myModel',
                 fields: [{
                     name: 'id',
-                    type: Scriptr.fieldTypes.INCREMENT,
+                    type: Scriptr.fields.INCREMENT,
                     options: {
                         seed: 1,
                         increment: 1
                     }
                 }, {
                     name: 'name',
-                    type: Scriptr.fieldTypes.STRING,
+                    type: Scriptr.fields.STRING,
                     options: {
                         value: 'John Doe'
                     }
                 }, {
                     name: 'age',
-                    type: Scriptr.fieldTypes.RANDOM,
+                    type: Scriptr.fields.RANDOM,
                     options: {
                         min: 18,
                         max: 35,
@@ -182,20 +212,20 @@ console.log(result);
             name: 'myModel',
             fields: [{
                 name: 'id',
-                type: Scriptr.fieldTypes.INCREMENT,
+                type: Scriptr.fields.INCREMENT,
                 options: {
                     seed: 1,
                     increment: 1
                 }
             }, {
                 name: 'name',
-                type: Scriptr.fieldTypes.STRING,
+                type: Scriptr.fields.STRING,
                 options: {
                     value: 'John Doe'
                 }
             }, {
                 name: 'age',
-                type: Scriptr.fieldTypes.RANDOM,
+                type: Scriptr.fields.RANDOM,
                 options: {
                     min: 18,
                     max: 35,
@@ -209,20 +239,20 @@ console.log(result);
                     name : 'wife',
                     fields: [{
                         name: 'id',
-                        type: Scriptr.fieldTypes.INCREMENT,
+                        type: Scriptr.fields.INCREMENT,
                         options: {
                             seed: 1,
                             increment: 1
                         }
                     }, {
                         name: 'name',
-                        type: Scriptr.fieldTypes.STRING,
+                        type: Scriptr.fields.STRING,
                         options: {
                             value: 'Jane Doe'
                         }
                     }, {
                         name: 'age',
-                        type: Scriptr.fieldTypes.RANDOM,
+                        type: Scriptr.fields.RANDOM,
                         options: {
                             min: 18,
                             max: 35,
@@ -258,20 +288,20 @@ console.log(result);
             name: 'myModel',
             fields: [{
                 name: 'id',
-                type: Scriptr.fieldTypes.INCREMENT,
+                type: Scriptr.fields.INCREMENT,
                 options: {
                     seed: 1,
                     increment: 1
                 }
             }, {
                 name: 'name',
-                type: Scriptr.fieldTypes.STRING,
+                type: Scriptr.fields.STRING,
                 options: {
                     value: 'John Doe'
                 }
             }, {
                 name: 'age',
-                type: Scriptr.fieldTypes.RANDOM,
+                type: Scriptr.fields.RANDOM,
                 options: {
                     min: 18,
                     max: 35,
@@ -283,7 +313,7 @@ console.log(result);
                 type: 'loop',
                 options : {
                     name : 'children',
-                    type: Scriptr.loopTypes.ITERATOR,
+                    type: Scriptr.loops.ITERATOR,
                     options : {
                         count : 3,
                         iteration : 1
@@ -292,20 +322,20 @@ console.log(result);
                         name: 'myModel',
                         fields: [{
                             name: 'id',
-                            type: Scriptr.fieldTypes.INCREMENT,
+                            type: Scriptr.fields.INCREMENT,
                             options: {
                                 seed: 1,
                                 increment: 1
                             }
                         }, {
                             name: 'name',
-                            type: Scriptr.fieldTypes.STRING,
+                            type: Scriptr.fields.STRING,
                             options: {
                                 value: 'John Doe'
                             }
                         }, {
                             name: 'age',
-                            type: Scriptr.fieldTypes.RANDOM,
+                            type: Scriptr.fields.RANDOM,
                             options: {
                                 min: 18,
                                 max: 35,
@@ -342,7 +372,7 @@ console.log(result);
     var fieldScriptr = new Scriptr({
         field : {
             name: 'random',
-            type: Scriptr.fieldTypes.RANDOM,
+            type: Scriptr.fields.RANDOM,
             options: {
                 min: 1,
                 max: 10,
