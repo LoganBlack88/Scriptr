@@ -1,0 +1,43 @@
+
+/*****************************************************
+*  NEW FEATURES
+*****************************************************/
+[/] Add validation to fields & loops.
+[/] Add a way to reuse models, loops, and fields throughout the config args.
+[/] Add a way to reuse an INSTANCE of a model, field, or loop, so that things like ID fields can be used multiple places w/o breaking the seed.
+[/] An order property can be added to
+[/] Add a flag on fields to allow them to not be returned after generate.
+    - Ie, we might have a field used to create other fields, but not want it actually returned after generate is called.
+    - Eg, if I have a 'sentDate' and an 'eventDate', I may want a random number that dictates the number of days between sent and event.
+[ ]
+
+
+
+/*****************************************************
+*  REFACTORS
+*****************************************************/
+[ ] Replace 'number' and 'string' with a single field called "static." Having these broken down by type is overkill.
+[ ] Either declare a dependency on underscore js, or organize some sort of "pseudo-underscore" (like Angular jQuery Lite).
+[ ] Make population of the 'fields' and 'loops' enum dynamic.
+[ ] Fix up the 'getVariable' method to include better checking (sub-methods?) and a base-case for when a field is not found.
+[ ] Consider removing LOOP and MODEL from the 'fields' enum. Would need to find a better way to achieve this, though.
+[ ] Change 'random' to 'randomNumber'.
+[ ] Hook up grunt to strip out the __testing__ variable on "build."
+[ ] Either split the clone method into shallow & deep copy versions, or add a flag parameter to indicate which.
+
+
+
+/*****************************************************
+*  NEW FIELD TYPES
+*****************************************************/
+[ ] Random set (ie, pick a random object from a set).
+[ ] Guid (or some kind of pseudo guid).
+[ ] Random number of a particular length. (eg, a 7-digit token number.)
+[ ] Lorem Ipsum.
+[ ] Names. (First, Last, Middle or Middle Initial?)
+[ ] Address. (This would essentially be either a model, or a set of fields that comprise an address.)
+[ ] Phone Number
+[ ] SSN
+[ ] Credit Card Number?
+
+

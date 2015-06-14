@@ -48,7 +48,7 @@ describe("A Scriptr instance", function(){
             var testScriptr = new Scriptr({
                 field: {
                     name: 'test',
-                    type: Scriptr.fields.STRING,
+                    type: Scriptr.fields.STATIC,
                     options: {
                         value: 'foo'
                     }
@@ -69,7 +69,7 @@ describe("A Scriptr instance", function(){
             result = testScriptr.generate({
                 field: {
                     name: 'test',
-                    type: Scriptr.fields.STRING,
+                    type: Scriptr.fields.STATIC,
                     options: {
                         value: 'bar'
                     }

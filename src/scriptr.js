@@ -1,45 +1,23 @@
-/**
- * Created by Logan on 12/14/2014.
- */
-
-
-//TODO: Want to be able to define variables that exist outside of the model / loop.
-
 var Scriptr = (function(){
 
 
-    /*
-    * Helper Functions
-    */
-    /**
-     * TODO: Organize helpers into a pseudo underscore.
-     *      If underscore is found in the global scope, use it.
-     *      If not, create your own _ with a sampling of underscore's methods.
-     *      Also, add any other helpful methods (such as clone) to the _ namespace.
-     *      Note, if underscore is added AFTER Scriptr, this could cause problems...
-     *      ...Maybe recheck for _ at instantiation, and re-add non-underscore helpers.
-     */
-
-
-
+    /*****************************************************
+     * Helper Methods
+     ******************************************************/
     var isArray = function(arg){
-
         return (arg instanceof Array);
     };
-
     var isObject = function(arg){
-
         return (arg instanceof Object);
     };
 
     var forEach = function(array, fn) {
-
+        var index;
         if (isArray(array)) {
             for (var i = 0; i < array.length; i++) {
-                fn(array[i]);
+                fn(array[i], ++index);
             }
         }
-
         else if(isObject(array)){
             var keys = Object.keys(array);
             forEach(keys, function(key){
@@ -55,14 +33,14 @@ var Scriptr = (function(){
                 obj1[key] = obj2[key];
             }
         });
-
         return obj1;
     };
 
     //TODO: Make a deep copy.
     /* Shallow Copy */
     var clone = function(obj) {
-
+        //TODO: If !isObject or !isArray would make for better tests.
+        if (!obj) { return obj; }
         var copy = {};
         var keys = Object.keys(obj);
         forEach(keys, function(key){
@@ -73,14 +51,24 @@ var Scriptr = (function(){
     };
 
 
-    /*
+    /*****************************************************
     * Fields
-    */
+    ******************************************************/
 
     var _fields = {
 
-        increment : {
+        custom : {
+            resolve: function($context){
+                return this.options.resolve.call(this, $context);
+            },
+            defaults : {
+                resolve : function($context) {
+                    return null;
+                }
+            }
+        },
 
+        increment : {
             resolve: function ($context) {
                 if (this.options.currentSeed === undefined) {
                     this.options.currentSeed = this.options.seed;
@@ -94,18 +82,6 @@ var Scriptr = (function(){
                 increment : 1
             }
         },
-
-
-        number : {
-            resolve : function($context) {
-
-                return this.options.value;
-            },
-            defaults : {
-                value : null
-            }
-        },
-
 
         random : {
             resolve : function($context) {
@@ -127,7 +103,7 @@ var Scriptr = (function(){
             }
         },
 
-        string : {
+        static : {
             resolve : function($context) {
 
                 return this.options.value;
@@ -140,14 +116,13 @@ var Scriptr = (function(){
     };
 
 
-    /*
-    * Loops
-    */
+    /*****************************************************
+     * Loops
+     ******************************************************/
 
     var _loops = {
 
         iterator : {
-
             resolve : function($context){
                 $variable = this.$variable;
 
@@ -158,7 +133,6 @@ var Scriptr = (function(){
                 }
                 return results;
             },
-
             defaults : {
                 count : 0,
                 iteration : 0
@@ -169,6 +143,10 @@ var Scriptr = (function(){
             //TODO: Implement 'doWhile' loop.
         },
 
+        forEach : {
+            //TODO: Implement 'forEach' loop.
+        },
+
         custom : {
             //TODO: Implement 'custom' loop.
         }
@@ -176,42 +154,37 @@ var Scriptr = (function(){
 
 
 
-    /*
-    * Objects / Constructors
-    */
+    /*****************************************************
+     * Variable Constructors
+     ******************************************************/
 
-    function Field(opts, $context) {
+    function Field(opts, $parent) {
         var _field = _fields[opts.type];
-        //TODO: Validate _field
 
         this.name = opts.name;
         this.options = applyDefaults(opts.options || {}, _field.defaults);
         this.value = null;
-
-        this.$context = clone($context);
-        this.$context.$field = this;
+        this.$parent = $parent;
 
         var field = this;
         this.resolve = function() {
-            field.value = _field.resolve.call(field, $context);
+            field.value = _field.resolve.call(field);
             return field.value;
         };
     };
 
-
-    function Model(opts, $context) {
+    function Model(opts, $parent) {
 
         this.name = opts.name;
         this.options = opts;
-        this.fields = {};
         this.value = {};
 
-        this.$context = clone($context);
-        this.$context.$model = this;
+        this.fields = {};
+        this.$parent = $parent;
 
         var model = this;
         forEach(opts.fields, function(field) {
-            model.fields[field.name] = getVariable(field, model.$context);
+            model.fields[field.name] = getVariable(field, model);
         });
 
         this.resolve = function() {
@@ -223,54 +196,49 @@ var Scriptr = (function(){
         };
     };
 
-
-    function Loop(opts, $context) {
+    function Loop(opts, $parent) {
         var _loop = _loops[opts.type];
-        //TODO: Validate _loop.
 
         this.name = opts.name;
         this.options = applyDefaults(opts.options, _loop.defaults);
         this.value = [];
-        this.$variable = getVariable(opts, $context);
-
-        this.$context = clone($context);
-        this.$context.$loop = this;
+        this.$parent = $parent;
+        this.$variable = getVariable(opts, this);
 
         var loop = this;
         this.resolve = function() {
-            this.value = _loop.resolve.call(loop, $context);
+            this.value = _loop.resolve.call(loop);
             return this.value;
         };
-
     };
 
 
-    var getVariable = function(args, $context){
+    var getVariable = function(args, $parent){
         var _variable;
 
         //LOOP
         if (args.loop) {
-            _variable = new Loop(args.loop, $context);
+            _variable = new Loop(args.loop, $parent);
         }
         else if (args.type === Scriptr.fields.LOOP) {
-            _variable = new Loop(args.options, $context);
+            _variable = new Loop(args.options, $parent);
         }
 
         // MODEL
         else if (args.model){
-            _variable = new Model(args.model, $context);
+            _variable = new Model(args.model, $parent);
         }
         else if (args.type === Scriptr.fields.MODEL) {
-            _variable = new Model(args.options, $context);
+            _variable = new Model(args.options, $parent);
         }
 
         //FIELD
         else if (args.field) {
-            _variable = new Field(args.field, $context);
+            _variable = new Field(args.field, $parent);
         }
         //TODO: Write a more meaningful test. Look for 'args.type' in list of field types.
         else {
-            _variable = new Field(args, $context);
+            _variable = new Field(args, $parent);
         }
 
         //TODO: Write a base case. Throw an exception or something, if variable cannot be resolved. Include variable name for identification?
@@ -293,7 +261,7 @@ var Scriptr = (function(){
     var generate = function(args) {
         args = args || _dataModel;
 
-        var generator = getVariable(args, {});
+        var generator = getVariable(args, undefined);
         var result = generator.resolve();
 
         return result;
@@ -333,13 +301,13 @@ var Scriptr = (function(){
 
         LOOP : 'loop',
 
-        INCREMENT : 'increment',
+        CUSTOM : 'custom',
 
-        NUMBER : 'number',
+        INCREMENT : 'increment',
 
         RANDOM : 'random',
 
-        STRING : 'string'
+        STATIC : 'static'
 
     };
 
@@ -350,7 +318,9 @@ var Scriptr = (function(){
 
         DOWHILE : 'doWhile',
 
-        CUSTOM : 'custom'
+        CUSTOM : 'custom',
+
+        FOREACH : 'forEach'
     };
 
 
@@ -361,7 +331,11 @@ var Scriptr = (function(){
 
     Scriptr.prototype.__testing__ = {
         _fields : _fields,
-        _loops : _loops
+        _loops : _loops,
+        isArray : isArray,
+        isObject : isObject,
+        forEach : forEach,
+        applyDefaults : applyDefaults
     };
 
     //END: Development only

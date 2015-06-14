@@ -5,6 +5,66 @@
 describe("The Scriptr field", function(){
 
 
+    describe("custom", function(){
+
+        it("is a field option", function(){
+
+            expect(Scriptr.prototype.__testing__._fields.custom).toBeDefined();
+        });
+
+        it("has a default return of null, if no resolve is offered.", function(){
+            var result;
+            var testDefault = function() {
+                var defaultScriptr = new Scriptr({
+                    field: {
+                        type: 'custom'
+                    }
+                });
+                result = defaultScriptr.generate();
+            }
+
+            expect(testDefault).not.toThrow();
+            expect(result).toBeNull();
+        });
+
+        it("accepts a user-defined resolve, and calls it during generation.", function(){
+            var customScriptr = new Scriptr({
+                field : {
+                    type : 'custom',
+                    options : {
+                        resolve : function($context) {
+                            return 12.581;
+                        }
+                    }
+                }
+            });
+            var result = customScriptr.generate();
+
+            expect(result).toEqual(12.581);
+        });
+
+        //TODO: Supplies a valid $context object as argument.
+        it("calls resolve with a valid $context parameter.", function() {
+            var testScriptr = new Scriptr({
+                model : {
+                    fields : [{
+                        type : 'custom',
+                        resolve : function(){
+
+                        }
+                    }]
+                }
+            });
+
+
+        });
+
+        //TODO: This is an instance of Field. (Requires adding Field to the __testing__ var).
+
+    });
+
+
+
     describe("increment", function(){
 
         it("is a field option", function(){
@@ -95,34 +155,6 @@ describe("The Scriptr field", function(){
     });
 
 
-
-    describe("number", function(){
-
-        it("is a field option.", function(){
-
-            expect(Scriptr.prototype.__testing__._fields.number).toBeDefined();
-        });
-
-        it("has a default value of null.", function(){
-
-            expect(Scriptr.prototype.__testing__._fields.number.defaults.value).toEqual(null);
-        });
-
-        it("accepts a value option, and returns that value at generate.", function(){
-            var numberScriptr = new Scriptr({
-                field : {
-                    type: 'number',
-                    options: { value: 6 }
-                }
-            });
-            var result = numberScriptr.generate();
-
-            expect(result).toEqual(6);
-        })
-    });
-
-
-
     describe("random", function(){
 
         it("is a field option", function(){
@@ -135,29 +167,62 @@ describe("The Scriptr field", function(){
 
 
 
-    describe("string", function(){
+    describe("static", function(){
 
         it("is a field option", function(){
 
-            expect(Scriptr.prototype.__testing__._fields.string).toBeDefined();
+            expect(Scriptr.prototype.__testing__._fields.static).toBeDefined();
         });
 
         it("has a default value of null.", function(){
 
-            expect(Scriptr.prototype.__testing__._fields.string.defaults.value).toEqual(null);
+            expect(Scriptr.prototype.__testing__._fields.static.defaults.value).toEqual(null);
         });
 
-        it("accepts a value option, and returns that value at generate.", function(){
+        it("accepts a value as an option, and returns that value at resolve time.", function(){
             var intScriptr = new Scriptr({
-                field : {
-                    type: 'string',
-                    options: { value: "foo bar" }
+                model : {
+                    fields: [{
+                        name : 'string',
+                        type : 'static',
+                        options: { value: "foo" }
+                    }, {
+                        name : 'number',
+                        type : 'static',
+                        options: { value: 10 }
+                    }, {
+                        name : 'date',
+                        type: 'static',
+                        options: { value: new Date('12/31/1999') }
+                    }, {
+                        name : 'array',
+                        type : 'static',
+                        options: { value: [1,2,3] }
+                    }, {
+                        name : 'object',
+                        type : 'static',
+                        options: { value: { key : 'value' } }
+                    }, {
+                        name : 'null',
+                        type : 'static',
+                        options: { value: null }
+                    }, {
+                        name : 'undefined',
+                        type : 'static',
+                        options: { value: undefined }
+                    }]
                 }
             });
             var result = intScriptr.generate();
 
-            expect(result).toEqual('foo bar');
-        })
+            expect(result.string).toEqual('foo');
+            expect(result.number).toEqual(10);
+            expect(result.date.valueOf()).toEqual(new Date('12/31/1999').valueOf());
+            expect(result.array instanceof Array).toBe(true);
+            expect(result.object instanceof Object).toBe(true);
+            expect(result.null).toBeNull();
+            expect(result.undefined).toBeUndefined();
+        });
     });
 
 
